@@ -1,29 +1,49 @@
-from django.core.exceptions import ValidationError
-from django.utils import timezone
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
+from djoser.serializers import UserSerializer
+
 
 from recipes.models import CustomUser
 from recipes.validators import username_validator
 
 
-class UserSerializer(ModelSerializer):
+class CustomUserSerializer(UserSerializer):
     username = serializers.RegexField(
-        regex=r'[\w.@+-]+\Z',
+        regex=r'[\w.@+z-]+\Z',
         max_length=150,
         required=True,
     )
 
+    auth_token = serializers.CharField(
+        required=False, read_only=True
+    )
+
     class Meta:
         fields = (
+            "auth_token",
             "username",
             "email",
             "first_name",
             "last_name",
-            "bio",
             "role",
+            "password"
         )
         model = CustomUser
+
+    def create(self, validated_data):
+        # Извлекаем пароль из данных
+        password = validated_data.pop('password')
+
+        # Создаем пользователя
+        user = CustomUser(**validated_data)
+        user.set_password(password)
+        user.save()
+
+    #     # Создаем и связываем токен
+    #     token, _ = Token.objects.get_or_create(user=user)
+    #     user.auth_token = token
+        user.save()
+
+        return user
 
     def validate_role(self, value):
         roles = [choice[0] for choice in CustomUser.ROLE_CHOICES]
@@ -37,23 +57,3 @@ class UserSerializer(ModelSerializer):
                 'Пользователь с таким именем уже существует.'
             )
         return username_validator(value)
-
-
-class SignupSerializer(serializers.Serializer):
-    email = serializers.EmailField(max_length=254, required=True)
-    username = serializers.RegexField(
-        regex=r'^[\w.@+-]+\Z',
-        max_length=150,
-    )
-
-    class Meta:
-        fields = ('email', 'username')
-        model = CustomUser
-
-    def validate_username(self, value):
-        return username_validator(value)
-
-
-class TokenSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    confirmation_code = serializers.CharField()
