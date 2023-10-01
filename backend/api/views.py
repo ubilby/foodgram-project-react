@@ -11,7 +11,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 
 from .utils import token_to_email
-from .serializers import SignupSerializer, TokenSerializer
 from .permissions import IsAdmin, IsAdminOrReadOnly
 from .serializers import CustomUserSerializer
 from recipes.models import CustomUser
