@@ -51,17 +51,35 @@ class CustomUser(AbstractUser):
         return self.username
 
 
+class Tag(models.Model):
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
+
 class Ingredient(models.Model):
-    title = models.CharField(max_length=16)
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
+
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
 
 class Recipe(models.Model):
-    title = models.CharField(max_length=16)
-    slug = models.SlugField(max_length=50, unique=True)
-    duration = models.IntegerField()
-    author = models.ForeignKey(
-        CustomUser, related_name='recipes',
-        on_delete=models.CASCADE
-    )
-    ingredients = models.ManyToManyField(Ingredient)
-    description = models.TextField()
+    name = models.CharField(max_length=255)
+    tags = models.ManyToManyField(Tag)
+    ingredients = models.ManyToManyField(
+        Ingredient, through='RecipeIngredient')
+    cooking_time = models.PositiveIntegerField()
+    text = models.TextField()
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    image = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
