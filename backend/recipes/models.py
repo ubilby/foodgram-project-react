@@ -27,8 +27,8 @@ class CustomUser(AbstractUser):
         choices=ROLE_CHOICES,
         default=ROLE_USER
     )
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
     password = models.CharField(max_length=20)
 
     class Meta:
