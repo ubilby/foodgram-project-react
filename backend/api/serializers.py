@@ -13,27 +13,23 @@ class CustomUserSerializer(UserSerializer):
         required=True,
     )
 
-    auth_token = serializers.CharField(
-        required=False, read_only=True
-    )
+    # auth_token = serializers.CharField(
+    #     required=False, read_only=True
+    # )
 
     class Meta:
         fields = (
-            'auth_token',
-            'username',
+            # 'auth_token',
             'email',
+            'username',
             'first_name',
             'last_name',
-            'role',
             'password'
         )
         model = CustomUser
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        re_password = validated_data.pop('re_password', None)
-        if re_password and password != re_password:
-            raise serializers.ValidationError('Пароли не совпадают.')
         user = CustomUser(**validated_data)
         user.set_password(password)
         user.save()
