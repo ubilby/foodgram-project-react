@@ -19,7 +19,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '51.250.23.239']
 
-AUTH_USER_MODEL = 'recipes.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'
 
 
 # Application definition
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'recipes',
-    'api'
+    'api',
+    'users'
 
 ]
 
