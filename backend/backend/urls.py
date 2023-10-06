@@ -6,6 +6,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
+    path('api/tags/', include('tags.urls')),
 
 
 ]

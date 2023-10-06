@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'recipes',
     'api',
-    'users'
+    'users',
+    'tags'
 
 ]
 
