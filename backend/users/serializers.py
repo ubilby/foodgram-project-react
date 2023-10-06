@@ -12,13 +12,8 @@ class CustomUserSerializer(UserSerializer):
         required=True,
     )
 
-    # auth_token = serializers.CharField(
-    #     required=False, read_only=True
-    # )
-
     class Meta:
         fields = (
-            # 'auth_token',
             'email',
             'username',
             'first_name',
