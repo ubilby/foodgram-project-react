@@ -37,10 +37,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'recipes',
-    'api',
+    'ingredients',
     'users',
-    'tags'
-
+    'tags',
 ]
 
 MIDDLEWARE = [
@@ -136,6 +135,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }
 
 DJOSER = {
@@ -146,3 +148,5 @@ DJOSER = {
         'user_create': 'api.serializers.UserSerializer',
     },
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
