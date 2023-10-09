@@ -1,6 +1,8 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from djoser.serializers import UserSerializer
 
+from .models import Subscribe
 from recipes.models import CustomUser
 from .validators import username_validator
 
@@ -18,6 +20,7 @@ class CustomUserSerializer(UserSerializer):
             'username',
             'first_name',
             'last_name',
+            'is_subscribed',
             'password'
         )
         model = CustomUser
@@ -44,9 +47,25 @@ class CustomUserSerializer(UserSerializer):
 
 
 class CustomUserGetSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
-        fields = ('email', 'id', 'username', 'first_name', 'last_name')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed'
+        )
+
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        return (
+            not user.id == None and
+            len(user.subscriber.filter(author=obj)) > 0
+        )
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -63,3 +82,16 @@ class ChangePasswordSerializer(serializers.Serializer):
         new_password = self.validated_data['new_password']
         user.set_password(new_password)
         user.save()
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscribe
+        fields = ('author',)
+
+    def validate_author(self, value):
+        user = self.context['request'].user
+        if user == value:
+            raise serializers.ValidationError(
+                "Вы не можете подписаться на себя.")
+        return value
