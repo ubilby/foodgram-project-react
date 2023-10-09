@@ -30,11 +30,13 @@ class RecipesIngrdientsReadSerializer(ModelSerializer):
     id = IntegerField(source='ingredients.id')
     name = CharField(source='ingredients.name')
     amount = ReadOnlyField()
+    measurement_unit = CharField(source='ingredients.measurement_unit')
 
     class Meta:
         model = RecipesIngredients
         fields = (
             'id',
             'name',
+            'measurement_unit',
             'amount'
         )

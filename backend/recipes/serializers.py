@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer
 from ingredients.serializers import IngredientM2MSerializer, RecipesIngrdientsReadSerializer
 from ingredients.models import Ingredients
 from .models import Recipes
+from users.serializers import CustomUserGetSerializer
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
@@ -42,15 +43,16 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
         return recipe
 
 
-class RecipesReadSerializer:
+class RecipesReadSerializer(ModelSerializer):
     ingredients = RecipesIngrdientsReadSerializer(
         many=True,
         source='ingredients_used'
     )
+    author = CustomUserGetSerializer()
 
     class Meta:
         model = Recipes
-        fileds = (
+        fields = (
             'id',
             'tags',
             'author',
