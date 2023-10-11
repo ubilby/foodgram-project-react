@@ -12,5 +12,5 @@ urlpatterns = [
     path('set_password/', ChangePasswordView.as_view(), name='set-password'),
     path('me/', UserProfileView.as_view(), name='user-profile'),
     path('', include(router.urls)),
-    # path('<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe')
+    path('<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe')
 ]

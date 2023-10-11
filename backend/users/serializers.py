@@ -86,7 +86,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class SubscribeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscribe
-        fields = ('author',)
+        fields = ('author', 'user')
 
     def validate_author(self, value):
         user = self.context['request'].user
