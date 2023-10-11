@@ -1,8 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from users.views import (ChangePasswordView, SubscribeView,
+from users.views import (ChangePasswordView,
                          UserCreateView, UserProfileView)
+from subscribes.views import SubscribeView
 
 app_name = 'users'
 router = DefaultRouter()

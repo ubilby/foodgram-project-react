@@ -14,7 +14,11 @@ class Recipes(models.Model):
     )
     cooking_time = models.PositiveIntegerField()
     text = models.TextField()
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='recipes_used',
+    )
     # image = models.TextField(blank=True, null=True)
 
     def __str__(self):

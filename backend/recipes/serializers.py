@@ -63,3 +63,9 @@ class RecipesReadSerializer(ModelSerializer):
             'cooking_time'
         )
         depth = 2
+
+
+class RecipesForSubscriptionSerializer(ModelSerializer):
+    class Meta:
+        model = Recipes
+        fields = ('id', 'name', 'cooking_time')
