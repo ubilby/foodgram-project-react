@@ -1,14 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
 
 from .serializers import RecipesCreateUpdateSerializer, RecipesReadSerializer
 from .models import Recipes
+from backend.permissions import IsAuthorOrAdminOrReadOnly
 
 
 class RecipesViewSet(ModelViewSet):
     queryset = Recipes.objects.all()
     serializer_class = RecipesCreateUpdateSerializer
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [IsAuthorOrAdminOrReadOnly, ]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

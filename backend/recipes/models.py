@@ -37,17 +37,3 @@ class RecipesIngredients(models.Model):
         related_name='recipes_used'
     )
     amount = models.IntegerField()
-
-
-# class RecipesTag(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     recipes = models.ForeignKey(
-#         'Recipes',
-#         on_delete=models.CASCADE,
-#         related_name='tag_used'
-#     )
-#     tag = models.ForeignKey(
-#         Tag,
-#         on_delete=models.CASCADE,
-#         related_name='recipes_used'
-#     )
