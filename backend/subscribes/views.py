@@ -10,7 +10,6 @@ from users.models import CustomUser
 
 
 class SubscribeView(ListCreateAPIView):
-    # queryset = CustomUser.objects.all()
     serializer_class = SubscribeCreateSerializer
     permission_classes = [IsAuthenticated]
 
