@@ -3,15 +3,15 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
-from .models import Favorite
-from .serializers import FavoriteSerializer
+from .models import Cart
+from .serializers import CartSerializer
 from recipes.models import Recipes
 from recipes.serializers import RecipesForSubscriptionSerializer
 
 
-class FavoriteView(CreateAPIView, DestroyAPIView):
-    queryset = Favorite.objects.all()
-    serializer_class = FavoriteSerializer
+class CartView(CreateAPIView, DestroyAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
     lookup_field = 'recipe__id'
 
     def create(self, request, pk):
