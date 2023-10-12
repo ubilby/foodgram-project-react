@@ -28,5 +28,5 @@ class FavoriteView(CreateAPIView, DestroyAPIView):
 
     def delete(self, request, pk):
         user = self.request.user
-        user.cart_recipes.filter(id=pk)[0].delete()
+        user.favorite_recipes.filter(recipe_id=pk)[0].delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
