@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -9,15 +9,14 @@ from .serializers import SubscribeCreateSerializer, SubscribeReadSerializer
 from users.models import CustomUser
 
 
-class SubscribeView(CreateAPIView):
-    queryset = Subscribe.objects.all()
+class SubscribeView(ListCreateAPIView):
+    # queryset = CustomUser.objects.all()
     serializer_class = SubscribeCreateSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request, pk):
-        author_id = self.kwargs.get('pk')
+        author_id = pk
         user_id = self.request.user.id
-        # author = CustomUser.objects.get(id=author_id)
         if author_id == self.request.user:
             return Response(
                 {"detail": "Вы не можете подписаться на себя."},
@@ -32,3 +31,12 @@ class SubscribeView(CreateAPIView):
             serializer = SubscribeReadSerializer(author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return SubscribeReadSerializer
+        return self.serializer_class
+
+    def get_queryset(self):
+        user = self.request.user
+        return CustomUser.objects.filter(subscribing__user=user)

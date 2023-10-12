@@ -12,6 +12,7 @@ router.register(r'', UserCreateView, basename="user")
 urlpatterns = [
     path('set_password/', ChangePasswordView.as_view(), name='set-password'),
     path('me/', UserProfileView.as_view(), name='user-profile'),
+    path('subscriptions/', SubscribeView.as_view(), name='subscribe'),
     path('', include(router.urls)),
-    path('<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe')
+    path('<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe'),
 ]
