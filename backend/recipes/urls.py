@@ -2,8 +2,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import RecipesViewSet
-from favorites.views import FavoriteView, FileView
-from cart.views import CartView
+from cart.views import CartView, FileView
+from favorites.views import FavoriteView
 
 app_name = 'recipes'
 router = DefaultRouter()

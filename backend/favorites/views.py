@@ -9,7 +9,7 @@ from .models import Favorite
 from .serializers import FavoriteSerializer
 from cart.models import Cart
 from users.models import CustomUser
-from recipes.models import Recipes, RecipesIngredients
+from recipes.models import Recipes
 from recipes.serializers import RecipesForSubscriptionSerializer
 
 
@@ -34,34 +34,3 @@ class FavoriteView(CreateAPIView, DestroyAPIView):
         user = self.request.user
         user.favorite_recipes.filter(recipe_id=pk)[0].delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class FileView(RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        file_name = self.create_file(user)
-        data = self.create_data(user)
-        self.fill_file(file_name, data)
-        return FileResponse(open(file_name, "rb"))
-
-    def create_data(self, user):
-        ingredients = RecipesIngredients.objects.filter(
-            recipes__cart_recipes__user_id=user.id
-        ).values('ingredients__name').annotate(total_amount=Sum('amount'))
-
-        data = {item['ingredients__name']: item['total_amount']
-                for item in ingredients}
-        return data
-
-    def create_file(self, user):
-        file_name = f'{user}.txt'
-        with open(file_name, 'w') as file:
-            file.write('ingredient, amount\n')
-        return file_name
-
-    def fill_file(self, file_name, data):
-        for ingredient, amount in data.items():
-            with open(file_name, 'a') as file:
-                file.write(f'{ingredient}, {amount}\n')
