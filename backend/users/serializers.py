@@ -2,7 +2,6 @@ from rest_framework import serializers
 from djoser.serializers import UserSerializer
 
 from users.models import CustomUser
-from subscribes.models import Subscribe
 from .validators import username_validator
 
 

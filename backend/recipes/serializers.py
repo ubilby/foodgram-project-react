@@ -129,11 +129,7 @@ class RecipesReadSerializer(ModelSerializer):
 
 class RecipesForSubscriptionSerializer(ModelSerializer):
     image = Base64ImageField(required=False, allow_null=True)
-    image_url = SerializerMethodField(
-        'get_image_url',
-        read_only=True,
-    )
 
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'image', 'image_url', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time')

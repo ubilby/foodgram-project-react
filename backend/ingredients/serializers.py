@@ -9,7 +9,7 @@ from recipes.models import RecipesIngredients
 class IngredientsSerializer(ModelSerializer):
     class Meta:
         model = Ingredients
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class IngredientM2MSerializer(ModelSerializer):
