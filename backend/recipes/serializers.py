@@ -1,5 +1,8 @@
+import base64
+
+from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ImageField, ModelSerializer, SerializerMethodField
 
 from ingredients.serializers import IngredientM2MSerializer, RecipesIngrdientsReadSerializer
 from ingredients.models import Ingredients
@@ -8,20 +11,41 @@ from users.serializers import CustomUserGetSerializer
 from favorites.models import Favorite
 
 
+class Base64ImageField(ImageField):
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+        return super().to_internal_value(data)
+
+
 class RecipesCreateUpdateSerializer(ModelSerializer):
     ingredients = IngredientM2MSerializer(many=True, source='ingredients_used')
-    # image = ImageField(required=True)
+    image = Base64ImageField(required=True)
+    image_url = SerializerMethodField(
+        'get_image_url',
+        read_only=True,
+    )
 
     class Meta:
         model = Recipes
         fields = (
             'ingredients',
             'tags',
-            # 'image',
+            'image',
+            'image_url',
             'name',
             'text',
             'cooking_time'
         )
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients_used')
@@ -51,6 +75,11 @@ class RecipesReadSerializer(ModelSerializer):
     )
     author = CustomUserGetSerializer()
     is_favorited = SerializerMethodField()
+    image = Base64ImageField(required=False, allow_null=True)
+    image_url = SerializerMethodField(
+        'get_image_url',
+        read_only=True,
+    )
 
     class Meta:
         model = Recipes
@@ -61,11 +90,17 @@ class RecipesReadSerializer(ModelSerializer):
             'ingredients',
             'is_favorited',
             'name',
-            # 'image',
+            'image',
+            'image_url',
             'text',
             'cooking_time'
         )
         depth = 2
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
 
     def get_is_favorited(self, obj):
         if self.context:
@@ -76,6 +111,12 @@ class RecipesReadSerializer(ModelSerializer):
 
 
 class RecipesForSubscriptionSerializer(ModelSerializer):
+    image = Base64ImageField(required=False, allow_null=True)
+    image_url = SerializerMethodField(
+        'get_image_url',
+        read_only=True,
+    )
+
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'cooking_time')
+        fields = ('id', 'name', 'image', 'image_url', 'cooking_time')

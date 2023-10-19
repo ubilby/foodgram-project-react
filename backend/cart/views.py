@@ -45,7 +45,9 @@ class FileView(RetrieveAPIView):
         data = self.create_data(user)
         self.fill_file(file_name, data)
         response = FileResponse(open(file_name, "rb"))
-        response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_name)}'
+        response['Content-Disposition'] = (
+            f'attachment;filename="{os.path.basename(file_name)}'
+        )
         os.remove(file_name)
         return response
 

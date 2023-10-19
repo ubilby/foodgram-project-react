@@ -19,7 +19,11 @@ class Recipes(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes_used',
     )
-    # image = models.TextField(blank=True, null=True)
+    image = models.ImageField(
+        upload_to='recipes/images/',
+        null=True,
+        default=None
+    )
 
     def __str__(self):
         return self.name

@@ -7,8 +7,6 @@ from rest_framework.response import Response
 
 from .models import Favorite
 from .serializers import FavoriteSerializer
-from cart.models import Cart
-from users.models import CustomUser
 from recipes.models import Recipes
 from recipes.serializers import RecipesForSubscriptionSerializer
 
