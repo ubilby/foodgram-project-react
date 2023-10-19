@@ -9,6 +9,7 @@ from ingredients.models import Ingredients
 from .models import Recipes
 from users.serializers import CustomUserGetSerializer
 from favorites.models import Favorite
+from cart.models import Cart
 
 
 class Base64ImageField(ImageField):
@@ -75,11 +76,13 @@ class RecipesReadSerializer(ModelSerializer):
     )
     author = CustomUserGetSerializer()
     is_favorited = SerializerMethodField()
+    is_in_shopping_cart = SerializerMethodField()
+
     image = Base64ImageField(required=False, allow_null=True)
-    image_url = SerializerMethodField(
-        'get_image_url',
-        read_only=True,
-    )
+    # image_url = SerializerMethodField(
+    #     'get_image_url',
+    #     read_only=True,
+    # )
 
     class Meta:
         model = Recipes
@@ -89,9 +92,10 @@ class RecipesReadSerializer(ModelSerializer):
             'author',
             'ingredients',
             'is_favorited',
+            'is_in_shopping_cart',
             'name',
             'image',
-            'image_url',
+            # 'image_url',
             'text',
             'cooking_time'
         )
@@ -102,10 +106,23 @@ class RecipesReadSerializer(ModelSerializer):
             return obj.image.url
         return None
 
+    def get_is_in_shopping_cart(self, obj):
+        if self.context:
+            user = self.context['request'].user
+            if (
+                self.context['request'].user.is_authenticated and
+                Cart.objects.filter(user=user, recipe=obj).count()
+            ):
+                return True
+        return False
+
     def get_is_favorited(self, obj):
         if self.context:
             user = self.context['request'].user
-            if Favorite.objects.filter(user=user, recipe=obj).count():
+            if (
+                self.context['request'].user.is_authenticated and
+                Favorite.objects.filter(user=user, recipe=obj).count()
+            ):
                 return True
         return False
 
