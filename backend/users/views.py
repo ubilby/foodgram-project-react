@@ -1,4 +1,4 @@
-from users.serializers import ChangePasswordSerializer
+from django.contrib.auth.hashers import check_password
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .models import CustomUser
-from .serializers import (CustomUserSerializer,
+from .serializers import (ChangePasswordSerializer, CustomUserSerializer,
                           CustomUserGetSerializer)
 from .permission import IsAuthenticatedOrReadOnlyAndNoDetail
 
@@ -34,7 +34,17 @@ class ChangePasswordView(CreateAPIView):
     serializer_class = ChangePasswordSerializer
 
     def create(self, request, *args, **kwargs):
+        user = request.user
+        # raise Exception(user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+        current_password = serializer.validated_data.get('current_password')
+        if not check_password(current_password, user.password):
+            return Response(
+                {'detail': 'Wrong password!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        new_password = serializer.validated_data.get('new_password')
+        user.set_password(new_password)
+        user.save()
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
