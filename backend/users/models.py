@@ -29,7 +29,7 @@ class CustomUser(AbstractUser):
     )
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    password = models.CharField(max_length=20)
+    password = models.CharField(max_length=100)
 
     class Meta:
         verbose_name = 'Users'

@@ -35,7 +35,6 @@ class ChangePasswordView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        # raise Exception(user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         current_password = serializer.validated_data.get('current_password')

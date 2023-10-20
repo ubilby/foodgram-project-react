@@ -55,8 +55,10 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             author=self.context['request'].user, **validated_data)
         for i in ingredients:
             current_ingredient_id = i.get('ingredients')['id']
+            # raise Exception(current_ingredient_id)
             current_ingredient = get_object_or_404(
                 Ingredients, id=current_ingredient_id)
+
             amount = i.get('amount')
             recipe.ingredients.add(
                 current_ingredient,
@@ -64,7 +66,6 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
                     'amount': amount
                 }
             )
-
         recipe.tags.set(tags)
         return recipe
 

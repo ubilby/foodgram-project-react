@@ -1,17 +1,17 @@
 version: '3.3' 
   
 volumes: 
-  pg_data: 
+  pg_final: 
   static: 
   media: 
   
 services: 
-  # db: 
-  #   env_file: .env 
-  #   image: postgres:13 
-  #   volumes: 
-  #    - pg_data:/var/lib/postgresql/data/ 
-  #   restart: always 
+  db: 
+    env_file: .env 
+    image: postgres:13.10
+    volumes: 
+     - pg_final:/var/lib/postgresql/data/ 
+    restart: always 
   
   backend: 
     env_file: .env 
@@ -19,8 +19,8 @@ services:
     volumes: 
      - static:/app/static/ 
      - media:/app/media/ 
-    # depends_on: 
-    #  - db 
+    depends_on: 
+     - db 
     restart: always 
   
   frontend: 
