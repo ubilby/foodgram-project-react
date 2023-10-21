@@ -55,7 +55,6 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             author=self.context['request'].user, **validated_data)
         for i in ingredients:
             current_ingredient_id = i.get('ingredients')['id']
-            # raise Exception(current_ingredient_id)
             current_ingredient = get_object_or_404(
                 Ingredients, id=current_ingredient_id)
 
@@ -80,10 +79,6 @@ class RecipesReadSerializer(ModelSerializer):
     is_in_shopping_cart = SerializerMethodField()
 
     image = Base64ImageField(required=False, allow_null=True)
-    # image_url = SerializerMethodField(
-    #     'get_image_url',
-    #     read_only=True,
-    # )
 
     class Meta:
         model = Recipes
@@ -96,7 +91,6 @@ class RecipesReadSerializer(ModelSerializer):
             'is_in_shopping_cart',
             'name',
             'image',
-            # 'image_url',
             'text',
             'cooking_time'
         )
