@@ -6,7 +6,7 @@ from rest_framework.serializers import ImageField, ModelSerializer, SerializerMe
 
 from ingredients.serializers import IngredientM2MSerializer, RecipesIngrdientsReadSerializer
 from ingredients.models import Ingredients
-from .models import Recipes
+from .models import Recipes, RecipesIngredients
 from users.serializers import CustomUserGetSerializer
 from favorites.models import Favorite
 from cart.models import Cart
@@ -28,7 +28,6 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
     image = Base64ImageField(required=True)
     image_url = SerializerMethodField(
         'get_image_url',
-        read_only=True,
     )
 
     class Meta:
@@ -67,6 +66,36 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             )
         recipe.tags.set(tags)
         return recipe
+
+    def update(self, instance, validated_data):
+        ingredients_data = validated_data.pop('ingredients_used', [])
+        tags = validated_data.pop('tags')
+
+        # Обновите поля объекта `instance` на основе `validated_data`
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time)
+
+        for ingredient_data in ingredients_data:
+            ingredient_id = ingredient_data.get('ingredients').get('id')
+            ingredient = Ingredients.objects.get(pk=ingredient_id)
+            amount = ingredient_data.get('amount')
+
+            # Если связь существует, обновите ее, иначе создайте новую
+            obj, created = RecipesIngredients.objects.update_or_create(
+                recipes=instance,
+                ingredients=ingredient,
+                defaults={'amount': amount}
+            )
+
+        # Установите новые теги
+        instance.tags.set(tags)
+
+        # Сохраните изменения в объекте
+        instance.save()
+
+        return instance
 
 
 class RecipesReadSerializer(ModelSerializer):
