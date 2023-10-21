@@ -24,3 +24,32 @@ class RecipesViewSet(ModelViewSet):
         instance = RecipesReadSerializer(instance=serializer.instance)
         headers = self.get_success_headers(serializer.data)
         return Response(instance.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_queryset(self):
+        queryset = Recipes.objects.all()
+
+        limit = self.request.query_params.get('limit')
+        if limit:
+            queryset = queryset[:int(limit)]
+
+        is_favorited = self.request.query_params.get('is_favorited')
+        if is_favorited:
+            user = self.request.user
+            if user.is_authenticated and is_favorited.lower() == 'true':
+                queryset = queryset.filter(favorites__user=user)
+
+        is_in_shopping_cart = self.request.query_params.get(
+            'is_in_shopping_cart')
+        if is_in_shopping_cart:
+            user = self.request.user
+            if user.is_authenticated and is_in_shopping_cart.lower() == 'true':
+                queryset = queryset.filter(cart__user=user)
+
+        author_id = self.request.query_params.get('author')
+        if author_id:
+            queryset = queryset.filter(author__id=author_id)
+
+        tags = self.request.query_params.getlist('tags')
+        if tags:
+            queryset = queryset.filter(tags__slug__in=tags)
+        return queryset
