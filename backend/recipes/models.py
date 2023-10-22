@@ -8,7 +8,7 @@ from backend.validators import validate_positive
 
 class Recipes(models.Model):
     name = models.CharField(max_length=255)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=False)
     ingredients = models.ManyToManyField(
         Ingredients,
         related_name='recipes',

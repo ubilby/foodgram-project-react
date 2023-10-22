@@ -104,6 +104,15 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             unique_ids.add(id)
         return values
 
+    def validate_tags(self, values):
+        unique_ids = set()
+        for tag_id in values:
+            if tag_id in unique_ids:
+                raise ValidationError(
+                    "Tags should be unique.")
+            unique_ids.add(tag_id)
+        return values
+
 
 class RecipesReadSerializer(ModelSerializer):
     ingredients = RecipesIngrdientsReadSerializer(
