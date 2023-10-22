@@ -1,13 +1,13 @@
 from django.db import models
 
+from backend.validators import validate_positive
 from users.models import CustomUser
 from tags.models import Tag
 from ingredients.models import Ingredients
-from backend.validators import validate_positive
 
 
 class Recipes(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=200)
     tags = models.ManyToManyField(Tag, blank=False)
     ingredients = models.ManyToManyField(
         Ingredients,
@@ -15,7 +15,7 @@ class Recipes(models.Model):
         through='RecipesIngredients',
         blank=False,
     )
-    cooking_time = models.PositiveIntegerField()
+    cooking_time = models.PositiveIntegerField(validators=[validate_positive])
     text = models.TextField()
     author = models.ForeignKey(
         CustomUser,
