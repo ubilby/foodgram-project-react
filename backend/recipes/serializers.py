@@ -2,7 +2,8 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
-from rest_framework.serializers import ImageField, ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (ImageField, ModelSerializer,
+                                        SerializerMethodField, ValidationError)
 
 from ingredients.serializers import IngredientM2MSerializer, RecipesIngrdientsReadSerializer
 from ingredients.models import Ingredients
@@ -70,8 +71,6 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients_used', [])
         tags = validated_data.pop('tags')
-
-        # Обновите поля объекта `instance` на основе `validated_data`
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
@@ -81,21 +80,21 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             ingredient_id = ingredient_data.get('ingredients').get('id')
             ingredient = Ingredients.objects.get(pk=ingredient_id)
             amount = ingredient_data.get('amount')
-
-            # Если связь существует, обновите ее, иначе создайте новую
             obj, created = RecipesIngredients.objects.update_or_create(
                 recipes=instance,
                 ingredients=ingredient,
                 defaults={'amount': amount}
             )
-
-        # Установите новые теги
         instance.tags.set(tags)
-
-        # Сохраните изменения в объекте
         instance.save()
 
         return instance
+
+    def validate_ingredients(self, value):
+        if not value:
+            raise ValidationError(
+                "Ingredients list cannot be empty.")
+        return value
 
 
 class RecipesReadSerializer(ModelSerializer):

@@ -1,7 +1,9 @@
 from django.db import models
+
 from users.models import CustomUser
 from tags.models import Tag
 from ingredients.models import Ingredients
+from backend.validators import validate_positive
 
 
 class Recipes(models.Model):
@@ -10,7 +12,8 @@ class Recipes(models.Model):
     ingredients = models.ManyToManyField(
         Ingredients,
         related_name='recipes',
-        through='RecipesIngredients'
+        through='RecipesIngredients',
+        blank=False,
     )
     cooking_time = models.PositiveIntegerField()
     text = models.TextField()
@@ -40,4 +43,4 @@ class RecipesIngredients(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes_used'
     )
-    amount = models.IntegerField()
+    amount = models.IntegerField(validators=[validate_positive])
