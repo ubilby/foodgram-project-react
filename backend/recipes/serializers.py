@@ -90,11 +90,19 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
 
         return instance
 
-    def validate_ingredients(self, value):
-        if not value:
+    def validate_ingredients(self, values):
+        if not values:
             raise ValidationError(
                 "Ingredients list cannot be empty.")
-        return value
+        unique_ids = set()
+        for value in values:
+            id = value['ingredients']['id']
+            if id in unique_ids:
+                raise ValidationError(
+                    "Ingredients should be unique."
+                )
+            unique_ids.add(id)
+        return values
 
 
 class RecipesReadSerializer(ModelSerializer):
