@@ -25,7 +25,9 @@ class Base64ImageField(ImageField):
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
-    ingredients = IngredientM2MSerializer(many=True, source='ingredients_used')
+    ingredients = IngredientM2MSerializer(
+        many=True, source='ingredients_used', required=True
+    )
     image = Base64ImageField(required=True)
     image_url = SerializerMethodField(
         'get_image_url',
@@ -70,6 +72,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients_used', [])
+        self.validate_ingredients(ingredients_data)
         tags = validated_data.pop('tags')
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
@@ -93,14 +96,16 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
     def validate_ingredients(self, values):
         if not values:
             raise ValidationError(
-                "Ingredients list cannot be empty.")
+                'Ingredients list cannot be empty.')
         unique_ids = set()
         for value in values:
             id = value['ingredients']['id']
             if id in unique_ids:
                 raise ValidationError(
-                    "Ingredients should be unique."
+                    'Ingredients should be unique.'
                 )
+            if Ingredients.objects.filter(id=id).count() == 0:
+                raise ValidationError('Non existing ingredient')
             unique_ids.add(id)
         return values
 
@@ -109,7 +114,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
         for tag_id in values:
             if tag_id in unique_ids:
                 raise ValidationError(
-                    "Tags should be unique.")
+                    'Tags should be unique.')
             unique_ids.add(tag_id)
         return values
 
@@ -117,7 +122,8 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
 class RecipesReadSerializer(ModelSerializer):
     ingredients = RecipesIngrdientsReadSerializer(
         many=True,
-        source='ingredients_used'
+        source='ingredients_used',
+        required=True
     )
     author = CustomUserGetSerializer()
     is_favorited = SerializerMethodField()
