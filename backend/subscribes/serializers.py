@@ -19,7 +19,10 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if user == value:
             raise serializers.ValidationError(
-                "Вы не можете подписаться на себя.")
+                "Self subscribe is depricated.")
+        if Subscribe.objects.filter(author=value, user=user).count() > 0:
+            raise serializers.ValidationError(
+                "Can't subscribe twice on one author.")
         return value
 
 
