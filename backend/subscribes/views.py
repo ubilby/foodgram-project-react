@@ -1,15 +1,12 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-from django.db.models.functions import RowNumber
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Subscribe
 from .serializers import SubscribeCreateSerializer, SubscribeReadSerializer
 from users.models import CustomUser
-from recipes.models import Recipes
 
 
 class SubscribeView(ListCreateAPIView):
