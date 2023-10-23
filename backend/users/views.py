@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from .models import CustomUser
 from .serializers import (ChangePasswordSerializer, CustomUserSerializer,
                           CustomUserGetSerializer)
-from .permission import IsAuthenticatedOrReadOnlyAndNoDetail
 
 
 class UserProfileView(RetrieveAPIView):

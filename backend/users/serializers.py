@@ -70,7 +70,7 @@ class CustomUserGetSerializer(serializers.ModelSerializer):
         if self.context:
             user = self.context['request'].user
             return (
-                not user.id == None and
+                not user.id is None and
                 len(user.subscriber.filter(author=obj)) > 0
             )
         return True
