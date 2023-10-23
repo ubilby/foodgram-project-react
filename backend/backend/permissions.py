@@ -1,7 +1,5 @@
 from rest_framework import permissions
 
-from recipes.models import CustomUser
-
 
 class IsAuthorOrAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -16,7 +14,7 @@ class IsAuthorOrAdminOrReadOnly(permissions.BasePermission):
             or request.user.is_authenticated
             and (
                 obj.author == request.user
-                or request.user.role == CustomUser.ROLE_ADMIN
+                or request.user.is_superuser
             )
         )
 

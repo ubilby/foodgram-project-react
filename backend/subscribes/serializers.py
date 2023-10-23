@@ -2,8 +2,8 @@ from rest_framework import serializers
 
 from .models import Subscribe
 from recipes.serializers import RecipesForSubscriptionSerializer
-from users.models import CustomUser
-from users.serializers import CustomUserGetSerializer
+from users.models import Account
+from users.serializers import AccountGetSerializer
 
 
 class SubscribeCreateSerializer(serializers.ModelSerializer):
@@ -25,14 +25,14 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
         return value
 
 
-class SubscribeReadSerializer(CustomUserGetSerializer):
+class SubscribeReadSerializer(AccountGetSerializer):
     recipes = RecipesForSubscriptionSerializer(
         many=True, source='recipes_used'
     )
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = CustomUser
+        model = Account
         fields = (
             "email",
             "id",

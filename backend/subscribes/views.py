@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import SubscribeCreateSerializer, SubscribeReadSerializer
-from users.models import CustomUser
+from users.models import Account
 
 
 class SubscribeView(ListCreateAPIView):
@@ -26,7 +26,7 @@ class SubscribeView(ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            author = get_object_or_404(CustomUser, id=author_id)
+            author = get_object_or_404(Account, id=author_id)
 
             serializer = SubscribeReadSerializer(author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -39,7 +39,7 @@ class SubscribeView(ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = CustomUser.objects.filter(subscribing__user=user)
+        queryset = Account.objects.filter(subscribing__user=user)
         recipes_limit = self.request.query_params.get('recipes_limit')
 
         if recipes_limit:

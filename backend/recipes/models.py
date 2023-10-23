@@ -1,7 +1,7 @@
 from django.db import models
 
 from backend.validators import validate_positive
-from users.models import CustomUser
+from users.models import Account
 from tags.models import Tag
 from ingredients.models import Ingredients
 
@@ -18,7 +18,7 @@ class Recipes(models.Model):
     cooking_time = models.PositiveIntegerField(validators=[validate_positive])
     text = models.TextField()
     author = models.ForeignKey(
-        CustomUser,
+        Account,
         on_delete=models.CASCADE,
         related_name='recipes_used',
     )

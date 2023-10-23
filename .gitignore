@@ -136,7 +136,7 @@ dmypy.json
 .DS_Store
 
 #migrations
-**/migrations/
+# **/migrations/
 
 #images
 *.jpeg

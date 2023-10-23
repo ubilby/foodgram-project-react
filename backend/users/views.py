@@ -7,13 +7,13 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 
-from .models import CustomUser
-from .serializers import (ChangePasswordSerializer, CustomUserSerializer,
-                          CustomUserGetSerializer)
+from .models import Account
+from .serializers import (ChangePasswordSerializer, AccountSerializer,
+                          AccountGetSerializer)
 
 
 class UserProfileView(RetrieveAPIView):
-    serializer_class = CustomUserGetSerializer
+    serializer_class = AccountGetSerializer
     permission_classes = [IsAuthenticated, ]
 
     def get_object(self):
@@ -21,14 +21,14 @@ class UserProfileView(RetrieveAPIView):
 
 
 class UserCreateView(ModelViewSet):
-    queryset = CustomUser.objects.all()
+    queryset = Account.objects.all()
     permission_classes = [AllowAny, ]
     pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
-            return CustomUserSerializer
-        return CustomUserGetSerializer
+            return AccountSerializer
+        return AccountGetSerializer
 
 
 class ChangePasswordView(CreateAPIView):

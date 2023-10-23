@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-from .validators import username_validator
+from backend.validators import username_validator
 
 
-class CustomUser(AbstractUser):
+class Account(AbstractUser):
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['email']

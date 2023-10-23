@@ -22,7 +22,7 @@ SECRET_KEY = os.getenv('SECRET_KEY'),
 
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '51.250.23.239']
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.Account'
 
 
 # Application definition

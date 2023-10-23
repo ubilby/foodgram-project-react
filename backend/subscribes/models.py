@@ -1,11 +1,11 @@
 from django.db import models
 
-from users.models import CustomUser
+from users.models import Account
 
 
 class Subscribe(models.Model):
     user = models.ForeignKey(
-        CustomUser,
+        Account,
         on_delete=models.CASCADE,
         verbose_name='Подписчик',
         related_name='subscriber',
@@ -13,7 +13,7 @@ class Subscribe(models.Model):
         null=False,
     )
     author = models.ForeignKey(
-        CustomUser,
+        Account,
         on_delete=models.CASCADE,
         verbose_name='Автор',
         related_name='subscribing',
