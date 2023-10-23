@@ -8,9 +8,12 @@ from users.serializers import CustomUserGetSerializer
 
 
 class SubscribeCreateSerializer(serializers.ModelSerializer):
+    recipes_limit = serializers.IntegerField(
+        required=False, min_value=1, allow_null=True)
+
     class Meta:
         model = Subscribe
-        fields = ('author', 'user')
+        fields = ('author', 'user', 'recipes_limit')
 
     def validate_author(self, value):
         user = self.context['request'].user
