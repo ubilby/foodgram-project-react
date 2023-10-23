@@ -2,6 +2,7 @@ from rest_framework import serializers
 from djoser.serializers import UserSerializer
 
 from users.models import CustomUser
+from subscribes.models import Subscribe
 from .validators import username_validator
 
 
@@ -28,6 +29,15 @@ class CustomUserSerializer(UserSerializer):
         user.set_password(password)
         user.save()
         return user
+
+    def to_representation(self, instance):
+        return {
+            'email': instance.email,
+            'id': instance.id,
+            'username': instance.username,
+            'first_name': instance.first_name,
+            'last_name': instance.last_name
+        }
 
     def validate_role(self, value):
         roles = [choice[0] for choice in CustomUser.ROLE_CHOICES]
