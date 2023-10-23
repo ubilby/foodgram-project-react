@@ -160,8 +160,8 @@ class RecipesReadSerializer(ModelSerializer):
         if self.context:
             user = self.context['request'].user
             if (
-                self.context['request'].user.is_authenticated and
-                Cart.objects.filter(user=user, recipe=obj).count()
+                self.context['request'].user.is_authenticated
+                and Cart.objects.filter(user=user, recipe=obj).count()
             ):
                 return True
         return False
@@ -170,8 +170,8 @@ class RecipesReadSerializer(ModelSerializer):
         if self.context:
             user = self.context['request'].user
             if (
-                self.context['request'].user.is_authenticated and
-                Favorite.objects.filter(user=user, recipe=obj).count()
+                self.context['request'].user.is_authenticated
+                and Favorite.objects.filter(user=user, recipe=obj).count()
             ):
                 return True
         return False
