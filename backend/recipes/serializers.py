@@ -71,24 +71,25 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients_data = validated_data.pop('ingredients_used', [])
-        self.validate_ingredients(ingredients_data)
-        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients_used', [])
+        self.validate_ingredients(ingredients)
+        tags_data = validated_data.pop('tags', [])
+        self.validate_tags(tags_data)
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time)
 
-        for ingredient_data in ingredients_data:
-            ingredient_id = ingredient_data.get('ingredients').get('id')
+        for recive_ingredient in ingredients:
+            ingredient_id = recive_ingredient.get('ingredients').get('id')
             ingredient = Ingredients.objects.get(pk=ingredient_id)
-            amount = ingredient_data.get('amount')
+            amount = recive_ingredient.get('amount')
             obj, created = RecipesIngredients.objects.update_or_create(
                 recipes=instance,
                 ingredients=ingredient,
                 defaults={'amount': amount}
             )
-        instance.tags.set(tags)
+        instance.tags.set(tags_data)
         instance.save()
 
         return instance
@@ -110,6 +111,8 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
         return values
 
     def validate_tags(self, values):
+        if not values:
+            raise ValidationError('Tags field is required')
         unique_ids = set()
         for tag_id in values:
             if tag_id in unique_ids:

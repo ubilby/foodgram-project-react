@@ -25,6 +25,15 @@ class RecipesViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(instance.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        updated_instance = RecipesReadSerializer(instance)
+        return Response(updated_instance.data)
+
     def get_queryset(self):
         queryset = Recipes.objects.all()
 
