@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.serializers import (ImageField, ModelSerializer,
                                         SerializerMethodField, ValidationError)
 
-from ingredients.serializers import IngredientM2MSerializer, RecipesIngrdientsReadSerializer
+from ingredients.serializers import (IngredientM2MSerializer,
+                                     RecipesIngrdientsReadSerializer)
 from ingredients.models import Ingredients
 from .models import Recipes, RecipesIngredients
 from users.serializers import CustomUserGetSerializer

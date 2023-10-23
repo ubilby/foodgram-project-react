@@ -4,7 +4,9 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
 from rest_framework import status, permissions
-from rest_framework.generics import CreateAPIView, DestroyAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    CreateAPIView, DestroyAPIView, RetrieveAPIView
+)
 from rest_framework.response import Response
 
 from .models import Cart
