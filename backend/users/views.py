@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import check_password
+from django.http import Http404
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, get_object_or_404
@@ -21,12 +22,10 @@ class AccountVeiwSet(UserViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         if 'pk' in kwargs:
-            # Если в URL есть 'pk', это означает запрос к одной записи
             instance = get_object_or_404(queryset, pk=kwargs['pk'])
             serializer = self.get_serializer(instance)
             return Response(serializer.data)
         else:
-            # В противном случае выполняется обычный список пользователей
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)

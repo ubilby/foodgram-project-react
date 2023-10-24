@@ -69,15 +69,24 @@ class ReadOnly(permissions.BasePermission):
 
 class IsAccountOwnerOrAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
+        if view.action == 'retrieve':
+            return True
+        elif view.action == 'me':
+            return not request.user.is_anonymous
+        elif request.method in permissions.SAFE_METHODS:
             return True
 
         return request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
+        if view.action == 'retrieve':
+            return True
+        elif view.action == 'me':
+            return not request.user.is_anonymous
+        elif request.method in permissions.SAFE_METHODS:
+            return True
         return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_authenticated
+            request.user.is_authenticated
             and (
                 obj == request.user
                 or request.user.is_superuser

@@ -172,12 +172,13 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'HIDE_USERS': False,
-
     'USER_ID_FIELD': 'email',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': False,
     'SERIALIZERS': {
         'user_create': 'users.serializers.AccountSerializer',
+        'current_user': 'users.serializers.AccountSerializer',
+        'user': 'djoser.serializers.UserSerializer',
     },
     'PERMISSIONS': {
         'user': ['backend.permissions.IsAccountOwnerOrAdminOrReadOnly'],
