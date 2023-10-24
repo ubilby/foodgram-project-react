@@ -1,13 +1,6 @@
-from django.contrib.auth.hashers import check_password
-from django.http import Http404
 from djoser.views import UserViewSet
-from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, get_object_or_404
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-
 
 from .models import Account
 from .serializers import AccountSerializer
