@@ -11,6 +11,7 @@ class AccountSerializer(UserSerializer):
         max_length=150,
         required=True,
     )
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         fields = (
@@ -18,7 +19,8 @@ class AccountSerializer(UserSerializer):
             'username',
             'first_name',
             'last_name',
-            'password'
+            'password',
+            'is_subscribed'
         )
         model = Account
 
@@ -35,7 +37,8 @@ class AccountSerializer(UserSerializer):
             'id': instance.id,
             'username': instance.username,
             'first_name': instance.first_name,
-            'last_name': instance.last_name
+            'last_name': instance.last_name,
+            'is_subscribed': self.get_is_subscribed(instance),
         }
 
     def validate_username(self, value):
@@ -44,3 +47,12 @@ class AccountSerializer(UserSerializer):
                 'There is user with this username'
             )
         return username_validator(value)
+
+    def get_is_subscribed(self, obj):
+        if self.context:
+            user = self.context['request'].user
+            return (
+                user.id is not None
+                and len(user.subscriber.filter(author=obj)) > 0
+            )
+        return True
