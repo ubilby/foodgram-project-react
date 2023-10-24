@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from djoser.views import UserViewSet
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import LimitOffsetPagination
@@ -9,57 +9,27 @@ from rest_framework.response import Response
 
 
 from .models import Account
-from .serializers import (ChangePasswordSerializer, AccountSerializer,
-                          AccountGetSerializer)
+from .serializers import AccountSerializer
+from backend.permissions import IsAccountOwnerOrAdminOrReadOnly
 
 
 class AccountVeiwSet(UserViewSet):
     serializer_class = AccountSerializer
-
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    # def perform_create(self, serializer, *args, **kwargs):
-    #     raise Exception(args)
-    #     return super().perform_create(serializer, *args, **kwargs)
-
-# class UserProfileView(RetrieveAPIView):
-#     serializer_class = AccountGetSerializer
-#     permission_classes = [IsAuthenticated, ]
-
-#     def get_object(self):
-#         return self.request.user
-
-
-class UserCreateView(ModelViewSet):
+    permission_classes = [IsAccountOwnerOrAdminOrReadOnly, ]
     queryset = Account.objects.all()
-    permission_classes = [AllowAny, ]
-    pagination_class = LimitOffsetPagination
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return AccountSerializer
-        return AccountGetSerializer
-
-
-class ChangePasswordView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ChangePasswordSerializer
-
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        current_password = serializer.validated_data.get('current_password')
-        if not check_password(current_password, user.password):
-            return Response(
-                {'detail': 'Wrong password!'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        new_password = serializer.validated_data.get('new_password')
-        user.set_password(new_password)
-        user.save()
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        if 'pk' in kwargs:
+            # Если в URL есть 'pk', это означает запрос к одной записи
+            instance = get_object_or_404(queryset, pk=kwargs['pk'])
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        else:
+            # В противном случае выполняется обычный список пользователей
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Subscribe
 from recipes.serializers import RecipesForSubscriptionSerializer
 from users.models import Account
-from users.serializers import AccountGetSerializer
+from users.serializers import AccountSerializer
 
 
 class SubscribeCreateSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
         return value
 
 
-class SubscribeReadSerializer(AccountGetSerializer):
+class SubscribeReadSerializer(AccountSerializer):
     recipes = RecipesForSubscriptionSerializer(
         many=True, source='recipes_used'
     )

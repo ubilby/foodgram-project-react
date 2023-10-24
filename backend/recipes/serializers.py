@@ -9,7 +9,7 @@ from ingredients.serializers import (IngredientM2MSerializer,
                                      RecipesIngrdientsReadSerializer)
 from ingredients.models import Ingredients
 from .models import Recipes, RecipesIngredients
-from users.serializers import AccountGetSerializer
+from users.serializers import AccountSerializer
 from favorites.models import Favorite
 from cart.models import Cart
 
@@ -129,7 +129,7 @@ class RecipesReadSerializer(ModelSerializer):
         source='ingredients_used',
         required=True
     )
-    author = AccountGetSerializer()
+    author = AccountSerializer()
     is_favorited = SerializerMethodField()
     is_in_shopping_cart = SerializerMethodField()
 

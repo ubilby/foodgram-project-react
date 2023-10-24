@@ -152,9 +152,9 @@ STATIC_ROOT = BASE_DIR / 'collected_static'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -167,15 +167,22 @@ REST_FRAMEWORK = {
     'rest_framework.pagination.PageNumberPagination',
 
     'PAGE_SIZE': 6,
+
 }
 
 DJOSER = {
+    'HIDE_USERS': False,
+
     'USER_ID_FIELD': 'email',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': False,
     'SERIALIZERS': {
         'user_create': 'users.serializers.AccountSerializer',
     },
+    'PERMISSIONS': {
+        'user': ['backend.permissions.IsAccountOwnerOrAdminOrReadOnly'],
+        'user_list': ['backend.permissions.IsAccountOwnerOrAdminOrReadOnly'],
+    }
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

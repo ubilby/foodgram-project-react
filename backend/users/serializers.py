@@ -41,46 +41,6 @@ class AccountSerializer(UserSerializer):
     def validate_username(self, value):
         if Account.objects.filter(username=value).exists():
             raise serializers.ValidationError(
-                'Пользователь с таким именем уже существует.'
+                'There is user with this username'
             )
         return username_validator(value)
-
-
-class AccountGetSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Account
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed'
-        )
-
-    def get_is_subscribed(self, obj):
-        if self.context:
-            user = self.context['request'].user
-            return (
-                user.id is not None
-                and len(user.subscriber.filter(author=obj)) > 0
-            )
-        return True
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    current_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-    def validate_old_password(self, value):
-        if not self.context['request'].user.check_password(value):
-            raise serializers.ValidationError("Старый пароль неверен.")
-        return value
-
-    def save(self):
-        user = self.context['request'].user
-        new_password = self.validated_data['new_password']
-        user.set_password(new_password)
-        user.save()
