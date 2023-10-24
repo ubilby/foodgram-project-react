@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import check_password
+from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -12,12 +13,25 @@ from .serializers import (ChangePasswordSerializer, AccountSerializer,
                           AccountGetSerializer)
 
 
-class UserProfileView(RetrieveAPIView):
-    serializer_class = AccountGetSerializer
-    permission_classes = [IsAuthenticated, ]
+class AccountVeiwSet(UserViewSet):
+    serializer_class = AccountSerializer
 
-    def get_object(self):
-        return self.request.user
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # def perform_create(self, serializer, *args, **kwargs):
+    #     raise Exception(args)
+    #     return super().perform_create(serializer, *args, **kwargs)
+
+# class UserProfileView(RetrieveAPIView):
+#     serializer_class = AccountGetSerializer
+#     permission_classes = [IsAuthenticated, ]
+
+#     def get_object(self):
+#         return self.request.user
 
 
 class UserCreateView(ModelViewSet):

@@ -38,12 +38,6 @@ class AccountSerializer(UserSerializer):
             'last_name': instance.last_name
         }
 
-    def validate_role(self, value):
-        roles = [choice[0] for choice in Account.ROLE_CHOICES]
-        if value not in roles:
-            raise serializers.ValidationError('Несуществующая роль.')
-        return value
-
     def validate_username(self, value):
         if Account.objects.filter(username=value).exists():
             raise serializers.ValidationError(
