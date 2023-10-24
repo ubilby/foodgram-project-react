@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from .models import Account
 from .serializers import AccountSerializer
+from .pagination import AccountLimitPagination
 from backend.permissions import IsAccountOwnerOrAdminOrReadOnly
 
 
@@ -11,6 +12,7 @@ class AccountVeiwSet(UserViewSet):
     serializer_class = AccountSerializer
     permission_classes = [IsAccountOwnerOrAdminOrReadOnly, ]
     queryset = Account.objects.all()
+    pagination_class = AccountLimitPagination
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
