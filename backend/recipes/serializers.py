@@ -2,27 +2,17 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework.serializers import (ImageField, ModelSerializer,
                                         SerializerMethodField, ValidationError)
 
+from .models import Recipes, RecipesIngredients
+from cart.models import Cart
 from ingredients.serializers import (IngredientM2MSerializer,
                                      RecipesIngrdientsReadSerializer)
 from ingredients.models import Ingredients
-from .models import Recipes, RecipesIngredients
-from users.serializers import AccountSerializer
 from favorites.models import Favorite
-from cart.models import Cart
-
-
-class Base64ImageField(ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
-        return super().to_internal_value(data)
+from users.serializers import AccountSerializer
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
