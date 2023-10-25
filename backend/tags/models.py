@@ -1,11 +1,10 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from colorfield.fields import ColorField
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
-    color = models.CharField(max_length=7, validators=[RegexValidator(
-        r'^#[0-9A-Fa-f]{6}$', message="Неверный формат цвета.")])
+    color = ColorField()
     slug = models.SlugField(unique=True)
 
     def __str__(self):
