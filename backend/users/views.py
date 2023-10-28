@@ -47,11 +47,23 @@ class AccountVeiwSet(UserViewSet):
         return Response(serializer.data)
 
     @action(
-        methods=['post'],
+        methods=['post', 'delete'],
         detail=False, permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, pk):
+        user = request.user
         author = get_object_or_404(Account, id=pk)
-        request.user.subscriptions.add(author)
-        serializer = SubscribesSerializer(author)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if request.method == 'POST':
+            if user.subscriptions.filter(id=pk).exists() or user.pk == pk:
+                return Response({'error': 'Uncorrect action!'}, status=status.HTTP_400_BAD_REQUEST)
+            user.subscriptions.add(author)
+            serializer = SubscribesSerializer(author)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        elif request.method == 'DELETE':
+            if user.subscriptions.filter(id=pk).exists():
+                user.subscriptions.remove(author)
+                return Response({'message': 'Unsubscribed successfully.'}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({'error': 'You are not subscribed to this user.'}, status=status.HTTP_400_BAD_REQUEST)

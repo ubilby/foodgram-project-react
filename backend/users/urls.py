@@ -8,8 +8,6 @@ router = DefaultRouter()
 router.register(r'', AccountVeiwSet, basename="user")
 
 urlpatterns = [
-    # path('subscriptions/', include(router.urls)),
-    # path('<int:pk>/subscribe/', include(router.urls)),
     path('<int:pk>/', include(router.urls)),
     path('', include(router.urls)),
 ]

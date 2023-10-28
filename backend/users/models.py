@@ -20,10 +20,12 @@ class Account(AbstractUser):
     subscriptions = models.ManyToManyField(
         "self",
         symmetrical=False,
-        related_name="subscribers"
+        related_name="subscribers",
+
     )
 
     class Meta:
+
         verbose_name = 'Users'
         verbose_name_plural = 'Users'
         ordering = ("username",)
