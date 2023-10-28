@@ -17,8 +17,15 @@ class Account(AbstractUser):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     password = models.CharField(max_length=100)
+    subscriptions = models.ManyToManyField(
+        "self",
+        symmetrical=False,
+        related_name="subscribers",
+
+    )
 
     class Meta:
+
         verbose_name = 'Users'
         verbose_name_plural = 'Users'
         ordering = ("username",)
