@@ -35,10 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
     'django_filters',
     'rest_framework_simplejwt',
-    'rest_framework.authtoken',
     'colorfield',
     'recipes',
     'ingredients',
@@ -153,10 +153,6 @@ STATIC_ROOT = BASE_DIR / 'collected_static'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-# ]
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -177,9 +173,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': False,
     'SERIALIZERS': {
-        'user_create': 'users.serializers.AccountSerializer',
         'current_user': 'users.serializers.AccountSerializer',
-        'user': 'djoser.serializers.UserSerializer',
     },
     'PERMISSIONS': {
         'user': ['backend.permissions.IsAccountOwnerOrAdminOrReadOnly'],

@@ -13,7 +13,7 @@ class AccountSerializer(UserSerializer):
     )
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
-    class Meta:
+    class Meta(UserSerializer.Meta):
         fields = (
             'email',
             'username',
@@ -24,13 +24,6 @@ class AccountSerializer(UserSerializer):
         )
         model = Account
 
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = Account(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
-
     def to_representation(self, instance):
         return {
             'email': instance.email,
@@ -40,13 +33,6 @@ class AccountSerializer(UserSerializer):
             'last_name': instance.last_name,
             'is_subscribed': self.get_is_subscribed(instance),
         }
-
-    def validate_username(self, value):
-        if Account.objects.filter(username=value).exists():
-            raise serializers.ValidationError(
-                'There is user with this username'
-            )
-        return username_validator(value)
 
     def get_is_subscribed(self, obj):
         if self.context:

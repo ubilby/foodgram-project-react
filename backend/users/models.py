@@ -5,7 +5,11 @@ from backend.validators import username_validator
 
 
 class Account(AbstractUser):
-    username = models.SlugField(
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ["id", "username", "first_name", "last_name"]
+
+    username = models.CharField(
+        max_length=150,
         unique=True,
         validators=[username_validator],
     )
