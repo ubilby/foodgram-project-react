@@ -176,8 +176,8 @@ DJOSER = {
         'current_user': 'users.serializers.AccountSerializer',
     },
     'PERMISSIONS': {
-        'user': ['backend.permissions.IsAccountOwnerOrAdminOrReadOnly'],
-        'user_list': ['backend.permissions.IsAccountOwnerOrAdminOrReadOnly'],
+        'user': ['backend.permissions.IsOwnerAdminOrReadOnly'],
+        'user_list': ['backend.permissions.IsOwnerAdminOrReadOnly'],
     }
 }
 
