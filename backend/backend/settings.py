@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'ingredients',
     'users',
     'tags',
-    'subscribes',
     'favorites',
     'cart'
 ]
