@@ -9,8 +9,8 @@ router = DefaultRouter()
 router.register(r'', AccountVeiwSet, basename="user")
 
 urlpatterns = [
-    path('subscriptions/', SubscribeView.as_view(), name='subscribe'),
-    path('<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe'),
+    # path('subscriptions/', SubscribeView.as_view(), name='subscribe'),
+    # path('<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe'),
     path('<int:pk>/', include(router.urls)),
     path('', include(router.urls)),
 ]

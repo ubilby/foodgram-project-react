@@ -1,5 +1,4 @@
 from django.db import models
-
 from users.models import Account
 
 
@@ -22,7 +21,13 @@ class Subscribe(models.Model):
     )
 
     class Meta:
-        models.UniqueConstraint(
-            fields=['author', 'user'],
-            name='unique_following'
-        )
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'user'],
+                name='unique_subscribing'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('author')),
+                name='user_cannot_follow_themselves'
+            )
+        ]

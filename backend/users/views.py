@@ -12,6 +12,8 @@ from .models import Account
 from .serializers import AccountSerializer
 from .pagination import AccountLimitPagination
 from backend.permissions import IsOwnerAdminOrReadOnly
+from subscribes.serializers import SubscribeReadSerializer
+from subscribes.models import Subscribe
 from recipes.models import Recipes
 
 
@@ -35,9 +37,31 @@ class AccountVeiwSet(UserViewSet):
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
 
-    # @action(
-    #     methods=['get'], detail=False,
-    #     permission_classes=[IsAuthenticated],
-    # )
-    # def subscriptions(self, request):
-    #     ...
+    @action(
+        methods=['get'], detail=False,
+        permission_classes=[IsAuthenticated],
+    )
+    def subscriptions(self, request):
+        pagination = AccountLimitPagination()
+        subscriptions = Account.objects.filter(subscriber__user=request.user)
+        page = pagination.paginate_queryset(subscriptions, request)
+        serializer = SubscribeReadSerializer(page, many=True)
+        return pagination.get_paginated_response(serializer.data)
+
+    @action(
+        methods=['post', 'delete'],
+        detail=False, permission_classes=[IsAuthenticated]
+    )
+    def subscribe(self, request, pk):
+        user = request.user
+        author = get_object_or_404(Account, id=pk)
+
+        if request.method == 'POST':
+            Subscribe.objects.create(user=user, author=author)
+            serializer = SubscribeReadSerializer(author)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        elif request.method == 'DELETE':
+            subscribe = get_object_or_404(Subscribe, user=user, author=author)
+            subscribe.delete()
+            return Response({'message': 'Unsubscribed successfully.'}, status=status.HTTP_204_NO_CONTENT)
