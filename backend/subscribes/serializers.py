@@ -13,13 +13,10 @@ class SubscribeResponseSerializer(serializers.ModelSerializer):
         fields = ('author', 'user')
 
     def validate_author(self, value):
-        # raise Exception(self.context, value)
         user = self.context['user']
         if user == value:
             raise serializers.ValidationError(
                 "Self subscribe is depricated.")
-        # raise Exception(Subscribe.objects.filter(
-        #     author=value, user=user).exists())
         if Subscribe.objects.filter(author=value, user=user).exists():
             raise serializers.ValidationError(
                 "Can't subscribe twice on one author.")
@@ -61,7 +58,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
         return True
 
     def get_recipes(self, obj):
-        # raise Exception(obj)
         recipes_limit = self.context.get('recipes_limit')
         recipes = obj.recipes_used.all()
         if recipes_limit:
@@ -74,7 +70,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
 
 class ShortSerializer(serializers.ModelSerializer):
-    """Сериализатор короткого ответа рецептов для подписок и избранного."""
     image = Base64ImageField()
 
     class Meta:

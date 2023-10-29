@@ -9,8 +9,12 @@ from ingredients.models import Ingredients
 from ingredients.serializers import (IngredientM2MSerializer,
                                      RecipesIngrdientsReadSerializer)
 from users.serializers import AccountSerializer
-
 from .models import Recipes, RecipesIngredients
+
+
+class RecipesPostSerializer(ModelSerializer):
+
+    ...
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
