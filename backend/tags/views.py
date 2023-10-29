@@ -1,8 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 
+from backend.permissions import IsAdminOrReadOnly
+
 from .models import Tag
 from .serializers import TagSerializer
-from backend.permissions import IsAdminOrReadOnly
 
 
 class TagViewSet(ModelViewSet):

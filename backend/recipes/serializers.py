@@ -1,18 +1,16 @@
-import base64
-
-from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework.serializers import (ImageField, ModelSerializer,
-                                        SerializerMethodField, ValidationError)
+from rest_framework.serializers import (ModelSerializer, SerializerMethodField,
+                                        ValidationError)
 
-from .models import Recipes, RecipesIngredients
 from cart.models import Cart
+from favorites.models import Favorite
+from ingredients.models import Ingredients
 from ingredients.serializers import (IngredientM2MSerializer,
                                      RecipesIngrdientsReadSerializer)
-from ingredients.models import Ingredients
-from favorites.models import Favorite
 from users.serializers import AccountSerializer
+
+from .models import Recipes, RecipesIngredients
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):

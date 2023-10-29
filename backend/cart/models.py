@@ -1,7 +1,7 @@
 from django.db import models
 
-from users.models import Account
 from recipes.models import Recipes
+from users.models import Account
 
 
 class Cart(models.Model):

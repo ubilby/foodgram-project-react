@@ -1,9 +1,10 @@
 from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
 
+from backend.permissions import IsAdminOrReadOnly
+
 from .models import Ingredients
 from .serializers import IngredientsSerializer
-from backend.permissions import IsAdminOrReadOnly
 
 
 class IngredientsViewSet(ModelViewSet):

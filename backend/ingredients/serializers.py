@@ -1,9 +1,9 @@
-from rest_framework.serializers import (
-    CharField, IntegerField, ModelSerializer,
-    ReadOnlyField
-)
-from .models import Ingredients
+from rest_framework.serializers import (CharField, IntegerField,
+                                        ModelSerializer, ReadOnlyField)
+
 from recipes.models import RecipesIngredients
+
+from .models import Ingredients
 
 
 class IngredientsSerializer(ModelSerializer):

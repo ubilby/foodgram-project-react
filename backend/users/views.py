@@ -5,13 +5,13 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Account
-from .serializers import AccountSerializer
-from .pagination import AccountLimitPagination
 from backend.permissions import IsOwnerAdminOrReadOnly
-from subscribes.serializers import SubscribeResponseSerializer, SubscribeSerializer
 from subscribes.models import Subscribe
-from recipes.models import Recipes
+from subscribes.serializers import SubscribeResponseSerializer
+
+from .models import Account
+from .pagination import AccountLimitPagination
+from .serializers import AccountSerializer
 
 
 class AccountVeiwSet(UserViewSet):
@@ -81,4 +81,7 @@ class AccountVeiwSet(UserViewSet):
         elif request.method == 'DELETE':
             subscribe = get_object_or_404(Subscribe, user=user, author=author)
             subscribe.delete()
-            return Response({'message': 'Unsubscribed successfully.'}, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {'message': 'Unsubscribed successfully.'},
+                status=status.HTTP_204_NO_CONTENT
+            )

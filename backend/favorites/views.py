@@ -3,10 +3,11 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
-from .models import Favorite
-from .serializers import FavoriteSerializer
 from recipes.models import Recipes
 from recipes.serializers import RecipesForSubscriptionSerializer
+
+from .models import Favorite
+from .serializers import FavoriteSerializer
 
 
 class FavoriteView(CreateAPIView, DestroyAPIView):

@@ -1,18 +1,18 @@
 import os
 
 from django.db.models import Sum
-from django.shortcuts import get_object_or_404
 from django.http import FileResponse
-from rest_framework import status, permissions
-from rest_framework.generics import (
-    CreateAPIView, DestroyAPIView, RetrieveAPIView
-)
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions, status
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     RetrieveAPIView)
 from rest_framework.response import Response
+
+from recipes.models import Recipes, RecipesIngredients
+from recipes.serializers import RecipesForSubscriptionSerializer
 
 from .models import Cart
 from .serializers import CartSerializer
-from recipes.models import Recipes, RecipesIngredients
-from recipes.serializers import RecipesForSubscriptionSerializer
 
 
 class CartView(CreateAPIView, DestroyAPIView):
