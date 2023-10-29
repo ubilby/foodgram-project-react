@@ -40,7 +40,7 @@ class AccountVeiwSet(UserViewSet):
     )
     def subscriptions(self, request):
         pagination = AccountLimitPagination()
-        subscriptions = Account.objects.filter(subscriber__user=request.user)
+        subscriptions = Account.objects.filter(subscribing__user=request.user)
         page = pagination.paginate_queryset(subscriptions, request)
         serializer = SubscribeReadSerializer(page, many=True)
         return pagination.get_paginated_response(serializer.data)
