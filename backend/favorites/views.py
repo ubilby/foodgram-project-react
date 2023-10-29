@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
 from recipes.models import Recipes
-from recipes.serializers import RecipesForSubscriptionSerializer
+from subscribes.serializers import ShortSerializer
 
 from .models import Favorite
 from .serializers import FavoriteSerializer
@@ -23,7 +23,7 @@ class FavoriteView(CreateAPIView, DestroyAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            serializer = RecipesForSubscriptionSerializer(recipe)
+            serializer = ShortSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -9,12 +9,8 @@ from ingredients.models import Ingredients
 from ingredients.serializers import (IngredientM2MSerializer,
                                      RecipesIngrdientsReadSerializer)
 from users.serializers import AccountSerializer
+
 from .models import Recipes, RecipesIngredients
-
-
-class RecipesPostSerializer(ModelSerializer):
-
-    ...
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
@@ -114,6 +110,9 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             unique_ids.add(tag_id)
         return values
 
+    def to_representation(self, instance):
+        return RecipesReadSerializer(instance).data
+
 
 class RecipesReadSerializer(ModelSerializer):
     ingredients = RecipesIngrdientsReadSerializer(
@@ -167,11 +166,3 @@ class RecipesReadSerializer(ModelSerializer):
             ):
                 return True
         return False
-
-
-class RecipesForSubscriptionSerializer(ModelSerializer):
-    image = Base64ImageField(required=False, allow_null=True)
-
-    class Meta:
-        model = Recipes
-        fields = ('id', 'name', 'image', 'cooking_time')

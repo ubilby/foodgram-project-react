@@ -1,9 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from backend.permissions import IsAuthorOrAdminOrReadOnly
+
 from .filter import RecipesFilterSet
 from .models import Recipes
 from .serializers import RecipesCreateUpdateSerializer, RecipesReadSerializer
