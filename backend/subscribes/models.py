@@ -24,10 +24,10 @@ class Subscribe(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['author', 'user'],
-                name='unique_subscribing'
+                name='unique subscribe'
             ),
-            models.CheckConstraint(
-                check=~models.Q(user=models.F('author')),
-                name='user_cannot_follow_themselves'
-            )
+            # models.CheckConstraint(
+            #     check=~models.Q(user=models.F('author')),
+            #     name='user_cannot_follow_themselves'
+            # )
         ]
