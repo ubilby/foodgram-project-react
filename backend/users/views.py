@@ -6,10 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Account
-from .serializers import AccountSerializer, SubscribesSerializer
+from .serializers import AccountSerializer
 from .pagination import AccountLimitPagination
 from backend.permissions import IsOwnerAdminOrReadOnly
-from subscribes.serializers import SubscribeReadSerializer
+from subscribes.serializers import SubscribeResponseSerializer, SubscribeSerializer
 from subscribes.models import Subscribe
 from recipes.models import Recipes
 
@@ -40,9 +40,17 @@ class AccountVeiwSet(UserViewSet):
     )
     def subscriptions(self, request):
         pagination = AccountLimitPagination()
-        subscriptions = Account.objects.filter(subscribing__user=request.user)
+        subscriptions = Subscribe.objects.filter(user=request.user)
         page = pagination.paginate_queryset(subscriptions, request)
-        serializer = SubscribeReadSerializer(page, many=True)
+        recipes_limit = request.GET.get('recipes_limit')
+        serializer = SubscribeResponseSerializer(
+            page,
+            many=True,
+            context={
+                'recipes_limit': recipes_limit,
+                'user': request.user
+            }
+        )
         return pagination.get_paginated_response(serializer.data)
 
     @action(
@@ -54,8 +62,20 @@ class AccountVeiwSet(UserViewSet):
         author = get_object_or_404(Account, id=pk)
 
         if request.method == 'POST':
-            Subscribe.objects.create(user=user, author=author)
-            serializer = SubscribeReadSerializer(author)
+            # subscribe = Subscribe.objects.create(user=user, author=author)
+            recipes_limit = request.GET.get('recipes_limit')
+            serializer = SubscribeResponseSerializer(
+                data={
+                    'user': user.id,
+                    'author': author.id
+                },
+                context={
+                    'recipes_limit': recipes_limit,
+                    'user': request.user
+                }
+            )
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         elif request.method == 'DELETE':
