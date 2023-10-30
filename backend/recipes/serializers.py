@@ -9,12 +9,12 @@ from ingredients.models import Ingredients
 from ingredients.serializers import (IngredientM2MSerializer,
                                      RecipesIngrdientsReadSerializer)
 from users.serializers import AccountSerializer
-
+from subscribes.serializers import SubscribeSerializer
 from .models import Recipes, RecipesIngredients
 from .utils import add_ingredient_and_amount
 
 
-class RecipesCreateUpdateSerializer(ModelSerializer):
+class RecipesCreateUpdateSerializer(SubscribeSerializer):
     ingredients = IngredientM2MSerializer(
         many=True, source='ingredients_used', required=True
     )
@@ -46,7 +46,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             author=self.context['request'].user, **validated_data)
         for ingredient in ingredients:
             current_ingredient, amount = add_ingredient_and_amount(
-                recipe, ingredient
+                ingredient
             )
             recipe.ingredients.add(
                 current_ingredient,
@@ -69,7 +69,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
 
         for ingredient in ingredients:
             current_ingredient, amount = add_ingredient_and_amount(
-                instance, ingredient
+                ingredient
             )
             RecipesIngredients.objects.update_or_create(
                 recipes=instance,
