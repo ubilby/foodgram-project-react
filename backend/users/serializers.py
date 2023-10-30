@@ -38,6 +38,6 @@ class AccountSerializer(UserSerializer):
             user = self.context['request'].user
             return (
                 user.id is not None
-                and user.subscriptions.filter(id=obj.id).exists()
+                and user.subscriber.filter(author=obj).exists()
             )
         return True

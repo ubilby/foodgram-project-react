@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from recipes.models import Recipes
 from users.models import Account
+from users.serializers import AccountSerializer
 
 from .models import Subscribe
 
@@ -27,7 +28,7 @@ class SubscribeResponseSerializer(serializers.ModelSerializer):
                                    context=self.context).data
 
 
-class SubscribeSerializer(serializers.ModelSerializer):
+class SubscribeSerializer(AccountSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField(read_only=True)
@@ -67,6 +68,12 @@ class SubscribeSerializer(serializers.ModelSerializer):
                 pass
 
         return ShortSerializer(recipes, many=True, context=self.context).data
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['recipes'] = self.get_recipes(instance)
+        response['recipes_count'] = self.get_recipes_count(instance)
+        return response
 
 
 class ShortSerializer(serializers.ModelSerializer):
