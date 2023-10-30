@@ -53,7 +53,8 @@ class FileView(RetrieveAPIView):
         os.remove(file_name)
         return response
 
-    def create_data(self, user):
+    @staticmethod
+    def create_data(user):
         ingredients = RecipesIngredients.objects.filter(
             recipes__cart_recipes__user_id=user.id
         ).values(
@@ -68,13 +69,15 @@ class FileView(RetrieveAPIView):
                 ]
         return data
 
-    def create_file(self, user):
+    @staticmethod
+    def create_file(user):
         file_name = f'{user}.txt'
         with open(file_name, 'w') as file:
             file.write('ingredient, amount, measurement_unit\n')
         return file_name
 
-    def fill_file(self, file_name, data):
+    @staticmethod
+    def fill_file(file_name, data):
         for ingredient, amount, measurement_unit in data:
             with open(file_name, 'a') as file:
                 file.write(f'{ingredient}, {amount}, {measurement_unit}\n')

@@ -11,6 +11,7 @@ from ingredients.serializers import (IngredientM2MSerializer,
 from users.serializers import AccountSerializer
 
 from .models import Recipes, RecipesIngredients
+from .utils import get_add_ingredient_and_amount
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
@@ -37,19 +38,16 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
-        return None
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients_used')
         tags = validated_data.pop('tags')
         recipe = Recipes.objects.create(
             author=self.context['request'].user, **validated_data)
-        for i in ingredients:
-            current_ingredient_id = i.get('ingredients')['id']
-            current_ingredient = get_object_or_404(
-                Ingredients, id=current_ingredient_id)
-
-            amount = i.get('amount')
+        for ingredient in ingredients:
+            current_ingredient, amount = get_add_ingredient_and_amount(
+                recipe, ingredient
+            )
             recipe.ingredients.add(
                 current_ingredient,
                 through_defaults={
@@ -57,7 +55,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
                 }
             )
         recipe.tags.set(tags)
-        return recipe
+        return super().update(recipe, validated_data)
 
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients_used', [])
@@ -69,13 +67,13 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time)
 
-        for recive_ingredient in ingredients:
-            ingredient_id = recive_ingredient.get('ingredients').get('id')
-            ingredient = Ingredients.objects.get(pk=ingredient_id)
-            amount = recive_ingredient.get('amount')
-            obj, created = RecipesIngredients.objects.update_or_create(
+        for ingredient in ingredients:
+            current_ingredient, amount = get_add_ingredient_and_amount(
+                instance, ingredient
+            )
+            RecipesIngredients.objects.update_or_create(
                 recipes=instance,
-                ingredients=ingredient,
+                ingredients=current_ingredient,
                 defaults={'amount': amount}
             )
         instance.tags.set(tags_data)
@@ -145,7 +143,6 @@ class RecipesReadSerializer(ModelSerializer):
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
-        return None
 
     def get_is_in_shopping_cart(self, obj):
         if self.context:
