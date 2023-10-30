@@ -11,7 +11,7 @@ from ingredients.serializers import (IngredientM2MSerializer,
 from users.serializers import AccountSerializer
 
 from .models import Recipes, RecipesIngredients
-from .utils import get_add_ingredient_and_amount
+from .utils import add_ingredient_and_amount
 
 
 class RecipesCreateUpdateSerializer(ModelSerializer):
@@ -45,7 +45,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
         recipe = Recipes.objects.create(
             author=self.context['request'].user, **validated_data)
         for ingredient in ingredients:
-            current_ingredient, amount = get_add_ingredient_and_amount(
+            current_ingredient, amount = add_ingredient_and_amount(
                 recipe, ingredient
             )
             recipe.ingredients.add(
@@ -68,7 +68,7 @@ class RecipesCreateUpdateSerializer(ModelSerializer):
             'cooking_time', instance.cooking_time)
 
         for ingredient in ingredients:
-            current_ingredient, amount = get_add_ingredient_and_amount(
+            current_ingredient, amount = add_ingredient_and_amount(
                 instance, ingredient
             )
             RecipesIngredients.objects.update_or_create(
