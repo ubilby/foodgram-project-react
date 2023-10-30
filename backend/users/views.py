@@ -54,34 +54,34 @@ class AccountVeiwSet(UserViewSet):
         return pagination.get_paginated_response(serializer.data)
 
     @action(
-        methods=['post', 'delete'],
+        methods=['post'],
         detail=False, permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, pk):
         user = request.user
         author = get_object_or_404(Account, id=pk)
+        recipes_limit = request.GET.get('recipes_limit')
+        serializer = SubscribeResponseSerializer(
+            data={
+                'user': user.id,
+                'author': author.id
+            },
+            context={
+                'recipes_limit': recipes_limit,
+                'user': request.user
+            }
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if request.method == 'POST':
-            # subscribe = Subscribe.objects.create(user=user, author=author)
-            recipes_limit = request.GET.get('recipes_limit')
-            serializer = SubscribeResponseSerializer(
-                data={
-                    'user': user.id,
-                    'author': author.id
-                },
-                context={
-                    'recipes_limit': recipes_limit,
-                    'user': request.user
-                }
-            )
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        elif request.method == 'DELETE':
-            subscribe = get_object_or_404(Subscribe, user=user, author=author)
-            subscribe.delete()
-            return Response(
-                {'message': 'Unsubscribed successfully.'},
-                status=status.HTTP_204_NO_CONTENT
-            )
+    @subscribe.mapping.delete
+    def subscribe(self, request, pk):
+        user = request.user
+        author = get_object_or_404(Account, id=pk)
+        subscribe = get_object_or_404(Subscribe, user=user, author=author)
+        subscribe.delete()
+        return Response(
+            {'message': 'Unsubscribed successfully.'},
+            status=status.HTTP_204_NO_CONTENT
+        )
