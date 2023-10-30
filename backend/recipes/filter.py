@@ -36,7 +36,7 @@ class RecipesFilterSet(django_filters.FilterSet):
         return queryset
 
     def filter_tags(self, queryset, name, value):
-        return queryset.filter(tags__slug__in=value)
+        return queryset.filter(tags__slug__in=value).distinct()
 
     def filter_limit(self, queryset, name, value):
         return queryset[:value] if value else queryset

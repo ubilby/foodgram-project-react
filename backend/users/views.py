@@ -76,7 +76,7 @@ class AccountVeiwSet(UserViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
-    def subscribe(self, request, pk):
+    def delete_subscribe(self, request, pk):
         user = request.user
         author = get_object_or_404(Account, id=pk)
         subscribe = get_object_or_404(Subscribe, user=user, author=author)

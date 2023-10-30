@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
