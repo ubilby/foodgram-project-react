@@ -1,13 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.pagination import PageNumberPagination
 
 from backend.permissions import IsAuthorOrAdminOrReadOnly
 
 from .filter import RecipesFilterSet
 from .models import Recipes
-from .serializers import RecipesCreateUpdateSerializer, RecipesReadSerializer
 from .paganation import RecipesLimitPagination
+from .serializers import RecipesCreateUpdateSerializer, RecipesReadSerializer
 
 
 class RecipesViewSet(ModelViewSet):
