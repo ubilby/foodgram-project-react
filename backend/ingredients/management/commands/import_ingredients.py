@@ -20,6 +20,7 @@ class Command(BaseCommand):
                 unit = data[1]
 
             ingredient = Ingredients(name=name, measurement_unit=unit)
+            ingredient.save()
 
         self.stdout.write(self.style.SUCCESS(
             'Ingredients imported successfully.'))

@@ -16,7 +16,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     def validate_recipe(self, recipe):
         user = self.context['request'].user
-        if Cart.objects.filter(user=user, recipe=recipe).count() > 0:
+        if Cart.objects.filter(user=user, recipe=recipe).exists():
             raise serializers.ValidationError(
                 "Can't add twice to cart.")
         return recipe

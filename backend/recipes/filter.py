@@ -4,9 +4,6 @@ from .models import Recipes
 
 
 class RecipesFilterSet(django_filters.FilterSet):
-    limit = django_filters.NumberFilter(
-        method='filter_limit'
-    )
     is_favorited = django_filters.NumberFilter(
         field_name='favorites',
         method='filter_is_favorited'
@@ -37,6 +34,3 @@ class RecipesFilterSet(django_filters.FilterSet):
 
     def filter_tags(self, queryset, name, value):
         return queryset.filter(tags__slug__in=value).distinct()
-
-    def filter_limit(self, queryset, name, value):
-        return queryset[:value] if value else queryset
