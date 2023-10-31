@@ -30,7 +30,7 @@ services:
   gateway: 
     image: ubilby/ya_p_final_gateway
     ports: 
-     - 80:80 
+     - 9000:80
     volumes: 
      - static:/app/static/ 
      - media:/app/media/
