@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY'),
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '51.250.23.239']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '51.250.23.239', 'ubilby.hopto.org']
 
 AUTH_USER_MODEL = 'users.Account'
 
