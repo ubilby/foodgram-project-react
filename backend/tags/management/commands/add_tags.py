@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Create some tags'
 
     def handle(self, *args, **options):
-        if Tag.objects.all().exists():
+        if not Tag.objects.all().exists():
             Tag.objects.create(name='dinner', color='#ff0000', slug='dinner')
             Tag.objects.create(
                 name='breakfast', color='#ff0000', slug='breakfast')

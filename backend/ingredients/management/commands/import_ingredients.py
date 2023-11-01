@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Import ingredients from a file'
 
     def handle(self, *args, **options):
-        if Ingredients.objects.all().exists():
+        if not Ingredients.objects.all().exists():
             with open('ingredients.csv', 'r') as file:
                 lines = file.readlines()
 
